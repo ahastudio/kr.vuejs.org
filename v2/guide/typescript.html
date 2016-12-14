@@ -2,18 +2,18 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>상태 관리 - vue.js</title>
+        <title>TypeScript 지원 - vue.js</title>
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
         <meta property="og:type" content="article">
-        <meta property="og:title" content="상태 관리 - vue.js">
+        <meta property="og:title" content="TypeScript 지원 - vue.js">
         <meta property="og:description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta property="og:image" content="https://vuejs.org/images/logo.png">
 
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="상태 관리 - vue.js">
+        <meta name="twitter:title" content="TypeScript 지원 - vue.js">
         <meta name="twitter:description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="twitter:image" content="https://vuejs.org/images/logo.png">
 
@@ -434,7 +434,7 @@
                 
                 
                 <li>
-                    <a href="/v2/guide/state-management.html" class="sidebar-link current">상태 관리</a>
+                    <a href="/v2/guide/state-management.html" class="sidebar-link">상태 관리</a>
                 </li>
             
                 
@@ -470,7 +470,7 @@
                 
                 
                 <li>
-                    <a href="/v2/guide/typescript.html" class="sidebar-link">TypeScript 지원</a>
+                    <a href="/v2/guide/typescript.html" class="sidebar-link current">TypeScript 지원</a>
                 </li>
             
                 
@@ -543,7 +543,7 @@
 </div>
 
 
-<div class="content guide with-sidebar state-management-guide">
+<div class="content guide with-sidebar typescript-guide">
     
       <div id="ad">
   <!-- <span>Sponsored By</span><br>
@@ -556,37 +556,42 @@
 
     
     
-      <h1>상태 관리</h1>
+      <h1>TypeScript 지원</h1>
     
-    <h2 id="공식-Flux-유사-구현"><a href="#공식-Flux-유사-구현" class="headerlink" title="공식 Flux-유사 구현"></a>공식 Flux-유사 구현</h2><p>대규모 응용 프로그램은 여러 컴포넌트에 분산되어있는 여러 상태와 그 상호 작용으로 인해 복잡해집니다. 이 문제를 해결하기 위해 Vue는 Elm에서 영감을 얻은 상태 관리 라이브러리 인 <a href="https://github.com/vuejs/vuex" target="_blank" rel="external">vuex</a>를 제공합니다. 또한 <a href="https://github.com/vuejs/vue-devtools" target="_blank" rel="external">vue-devtools</a>에 통합되어 설정이 필요 없는 액세스를 제공합니다.</p>
-<h3 id="React-개발자를-위한-안내"><a href="#React-개발자를-위한-안내" class="headerlink" title="React 개발자를 위한 안내"></a>React 개발자를 위한 안내</h3><p>React에서 온다면, vuex가 그 생태계에서 가장 인기있는 Flux 구현 인 <a href="https://github.com/reactjs/redux" target="_blank" rel="external">redux</a>와 어떻게 비교되는지 궁금할 것입니다. Redux는 실제로 뷰 레이어에 무관하므로 어떤 <a href="https://github.com/egoist/revue" target="_blank" rel="external">간단한 바인딩</a>을 통해 Vue와 쉽게 사용할 수 있습니다. Vuex는 Vue 앱에 있어 다른 점이 있습니다. 이를 통해 보다 직관적인 API와 향상된 개발 경험을 제공하여 Vue와의 향상된 통합을 할 수 있습니다.</p>
-<h2 id="간단한-상태-관리-시작하기"><a href="#간단한-상태-관리-시작하기" class="headerlink" title="간단한 상태 관리 시작하기"></a>간단한 상태 관리 시작하기</h2><p>Vue 응용 프로그램에서 가장 근본이 되는 것은 원시 <code>data</code> 객체라는 것을 종종 간과하게됩니다. Vue 인스턴스는 단순히 그것에 대한 액세스를 프록시합니다. 따라서 여러 인스턴스에서 공유해야하는 상태가 있으면 ID로 간단히 공유 할 수 있습니다.</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> sourceOfTruth = &#123;&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> vmA = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">data</span>: sourceOfTruth</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="keyword">const</span> vmB = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">data</span>: sourceOfTruth</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p>이제 <code>sourceOfTruth</code>가 변형 될 때마다<code>vmA</code>와<code>vmB</code>가 자동으로 뷰를 갱신합니다. 이 인스턴스들 각각의 하위 컴포넌트들은<code>this.$root.$data</code>를 통해 접근 할 수 있습니다. 우리는 현재 단일 소스를 가지고 있지만 디버깅은 악몽 같을 것입니다. 모든 데이터는 흔적을 남기지 않고 언제든지 앱의 일부에서 변경할 수 있습니다.</p>
-<p>이 문제를 해결하기 위해 간단한 <strong>store 패턴</strong> 을 사용할 수 있습니다.</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> store = &#123;</div><div class="line">  <span class="attr">debug</span>: <span class="literal">true</span>,</div><div class="line">  <span class="attr">state</span>: &#123;</div><div class="line">    <span class="attr">message</span>: <span class="string">'Hello!'</span></div><div class="line">  &#125;,</div><div class="line">  setMessageAction (newValue) &#123;</div><div class="line">    <span class="keyword">this</span>.debug &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'setMessageAction triggered with'</span>, newValue)</div><div class="line">    <span class="keyword">this</span>.state.message = newValue</div><div class="line">  &#125;,</div><div class="line">  clearMessageAction () &#123;</div><div class="line">    <span class="keyword">this</span>.debug &amp;&amp; <span class="built_in">console</span>.log(<span class="string">'clearMessageAction triggered'</span>)</div><div class="line">    <span class="keyword">this</span>.state.message = <span class="string">'clearMessageAction triggered'</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>store의 상태를 변경시키는 모든 조치는 store 자체에 들어 있습니다. 이러한 유형의 중앙 집중식 상태 관리는 어떤 유형의 돌연변이가 발생할 수 있는지, 어떻게 유발되는지를보다 쉽게 이해할 수있게 합니다. 무언가가 잘못 될 경우 버그에 이르는 일에 대한 로그가 생성됩니다.</p>
-<p>또한 각 인스턴스 / 컴포넌트는 여전히 자체적으로 비공개 상태를 가지고 관리할 수 있습니다.</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> vmA = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">data</span>: &#123;</div><div class="line">    <span class="attr">privateState</span>: &#123;&#125;,</div><div class="line">    <span class="attr">sharedState</span>: store.state</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="keyword">var</span> vmB = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">data</span>: &#123;</div><div class="line">    <span class="attr">privateState</span>: &#123;&#125;,</div><div class="line">    <span class="attr">sharedState</span>: store.state</div><div class="line">  &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p><img src="/images/state.png" alt="상태 관리"></p>
-<p class="tip">액션에서 원래 상태 객체를 절대 교체하면 안된다는 점에 유의해야 합니다. 컴포넌트와 저장소는 변이를 관찰하기 위해 동일한 객체에 대한 참조를 공유해야 합니다.</p>
-
-<p>컴포넌트가 store에 속한 상태를 직접 변이 시킬 수 없지만 store에 조작을 수행하도록 알리는 이벤트를 보내야하는 컨벤션을 계속 개발할 때 결국 <a href="https://facebook.github.io/flux" target="_blank" rel="external">Flux</a> 아키텍처에 다다르게 됩니다. 이 컨벤션의 이점은 store에서 발생하는 모든 상태 변이를 기록하고 mutation 로그, 스냅 샷 및 히스토리 되돌리기 / 시간 여행과 같은 고급 디버깅 도우미를 구현할 수 있다는 것입니다.</p>
-<p>이것은 우리에게 <a href="https://github.com/vuejs/vuex" target="_blank" rel="external">vuex</a>에 대한 완전함을 가져다 줍니다. 이제 지금까지 읽은 것을 시험해 볼 시간입니다!</p>
+    <h2 id="공식-선언-파일"><a href="#공식-선언-파일" class="headerlink" title="공식 선언 파일"></a>공식 선언 파일</h2><p>정적 타이핑 시스템은 특히 애플리케이션이 커짐에 따라 생기는 많은 잠재적 런타임 오류를 예방할 수 있습니다. 이것이 Vue가 <a href="https://www.typescriptlang.org/" target="_blank" rel="external">TypeScript</a>에 대해 <a href="https://github.com/vuejs/vue/tree/dev/types" target="_blank" rel="external">공식 타입 선언</a>을 제공하는 이유입니다. Vue 코어뿐 아니라 <a href="https://github.com/vuejs/vue-router/tree/dev/types" target="_blank" rel="external">Vue Router</a>와 <a href="https://github.com/vuejs/vuex/tree/dev/types" target="_blank" rel="external">Vuex</a>도 마찬가지입니다.</p>
+<p><a href="https://unpkg.com/vue/types/" target="_blank" rel="external">NPM에 배포</a> 되어 있기 때문에, Vue로 선언을 자동으로 가져오므로 <code>Typings</code>와 같은 외부 도구조차 필요하지 않습니다. 즉, 더 추가할것이 별로 없습니다.</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> Vue = <span class="built_in">require</span>(<span class="string">'vue'</span>)</div></pre></td></tr></table></figure>
+<p>그런 다음 모든 메소드, 특성 및 매개 변수의 타입을 검사합니다. 예를 들어, <code>template</code> 컴포넌트 옵션을 <code>tempate</code> (<code>l</code>이 없음)으로 잘못 입력하면, TypeScript 컴파일러는 컴파일시 오류 메시지를 출력합니다. <a href="https://code.visualstudio.com/" target="_blank" rel="external">Visual Studio Code</a>와 같은 TypeScript를 사용할 수 있는 에디터를 사용하는 경우 컴파일 전에 이러한 에러를 발견할 수도 있습니다.</p>
+<p><img src="/images/typescript-type-error.png" alt="Visual Studio Code의 타입 에러"></p>
+<h3 id="컴파일-옵션"><a href="#컴파일-옵션" class="headerlink" title="컴파일 옵션"></a>컴파일 옵션</h3><p>Vue의 선언 파일에는 <code>--lib DOM, ES2015.Promise</code> <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html" target="_blank" rel="external">컴파일러 옵션</a>이 필요합니다. 이 옵션을 <code>tsc</code> 커맨드에 전달하거나<code>tsconfig.json</code> 파일에 해당 옵션을 추가 할 수 있습니다.</p>
+<h3 id="Vue의-타입-선언에-접근하기"><a href="#Vue의-타입-선언에-접근하기" class="headerlink" title="Vue의 타입 선언에 접근하기"></a>Vue의 타입 선언에 접근하기</h3><p>자신의 코드에 Vue 타입을 주석으로 추가하려면 Vue의 내보낸 객체에서 해당 코드에 액세스 할 수 있습니다. 예를 들어, 내보낸 컴포넌트 옵션 객체 (예: <code>.vue</code> 파일)에 주석을 추가하려면,</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> Vue = <span class="built_in">require</span>(<span class="string">'vue'</span>)</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</div><div class="line">  props: [<span class="string">'message'</span>],</div><div class="line">  template: <span class="string">'&lt;span&gt;&#123;&#123; message &#125;&#125;&lt;/span&gt;'</span></div><div class="line">&#125; as Vue.ComponentOptions&lt;Vue&gt;</div></pre></td></tr></table></figure>
+<h2 id="고전적인-스타일의-Vue-컴포넌트"><a href="#고전적인-스타일의-Vue-컴포넌트" class="headerlink" title="고전적인 스타일의 Vue 컴포넌트"></a>고전적인 스타일의 Vue 컴포넌트</h2><p>Vue 컴포넌트 옵션은 타입에 대해 쉽게 주석을 추가할 수 있습니다.</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> Vue = <span class="built_in">require</span>(<span class="string">'vue'</span>)</div><div class="line"></div><div class="line"><span class="comment">// 컴포넌트 타입 선언</span></div><div class="line"><span class="keyword">interface</span> MyComponent <span class="keyword">extends</span> Vue &#123;</div><div class="line">  message: <span class="built_in">string</span></div><div class="line">  onClick (): <span class="built_in">void</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</div><div class="line">  template: <span class="string">'&lt;button @click="onClick"&gt;Click!&lt;/button&gt;'</span>,</div><div class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      message: <span class="string">'Hello!'</span></div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  methods: &#123;</div><div class="line">    onClick: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="comment">// TypeScript는 `this`가 MyComponent 타입이고</span></div><div class="line">      <span class="comment">// `this.message`가 문자열이라고 알고 있습니다.</span></div><div class="line">      <span class="built_in">window</span>.alert(<span class="keyword">this</span>.message)</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"><span class="comment">// 내보낸 옵션 객체에 MyComponent 타입으로 명시적인 주석을 추가해야합니다.</span></div><div class="line">&#125; as Vue.ComponentOptions&lt;MyComponent&gt;</div></pre></td></tr></table></figure>
+<p>안타깝게도, 약간의 제약 사항이 있습니다:</p>
+<ul>
+<li><p><strong>TypeScript는 Vue의 API에서 모든 타입을 유추할 수 없습니다.</strong> 예를 들어 <code>data</code> 함수에서 반환 된 <code>message</code> 속성이 <code>MyComponent</code> 인스턴스에 추가된다는 것을 모릅니다. 즉, 만약 number 나 boolean 값을 <code>message</code>에 대입하면, linter와 컴파일러는 문자열이어야 한다는 판단을 하여 오류를 발생시킬 수 없습니다.</p>
+</li>
+<li><p>위의 제약 사항 때문에 이와 같은 <strong>주석이 장황해 질 수 있습니다.</strong> TypeScript는 이 경우, 타입을 추론할 수 없기 때문에 수동으로 <code>message</code>를 문자열로 선언해야하는 유일한 이유가 있습니다.</p>
+</li>
+</ul>
+<p>다행히 <a href="https://github.com/vuejs/vue-class-component" target="_blank" rel="external">vue-class-component</a>는 이 두 가지 문제를 모두 해결할 수 있습니다. 공식 컴패니언 라이브러리로, 컴포넌트를 네이티브 JavaScript 클래스로 선언할 수있게 해주며, <code>@Component</code> 데코레이터를 사용합니다. 예를 들어 위의 컴포넌트를 다시 작성해 보겠습니다.</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> Vue = <span class="built_in">require</span>(<span class="string">'vue'</span>)</div><div class="line"><span class="keyword">import</span> Component from <span class="string">'vue-class-component'</span></div><div class="line"></div><div class="line"><span class="comment">// @Component 데코레이터는 클래스가 Vue 컴포넌트임을 나타냅니다.</span></div><div class="line">@Component(&#123;</div><div class="line">  <span class="comment">// 모든 컴포넌트 옵션이 이곳에 허용됩니다.</span></div><div class="line">  template: <span class="string">'&lt;button @click="onClick"&gt;Click!&lt;/button&gt;'</span></div><div class="line">&#125;)</div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> MyComponent extends Vue &#123;</div><div class="line">  <span class="comment">// 초기 데이터는 인스턴스 속성으로 선언할 수 있습니다.</span></div><div class="line">  message: <span class="built_in">string</span> = <span class="string">'Hello!'</span></div><div class="line"></div><div class="line">  <span class="comment">// 컴포넌트 메소드는 인스턴스 메소드로 선언할 수 있습니다.</span></div><div class="line">  onClick (): <span class="built_in">void</span> &#123;</div><div class="line">    <span class="built_in">window</span>.alert(<span class="keyword">this</span>.message)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>이렇게 다른 문법을 사용하여 컴포넌트 정의가 더 짧을뿐만 아니라 TypeScript도 명시적인 인터페이스 선언없이 <code>message</code> 및 <code>onClick</code> 타입을 판단 할 수 있습니다. 이를 통해 계산된 속성, 라이프 사이클 훅 및 렌더링 함수의 타입을 처리 할 수 있습니다. 자세한 사용법은 <a href="https://github.com/vuejs/vue-class-component#vue-class-component" target="_blank" rel="external">vue-class-component 문서</a>를 참조하세요.</p>
 
     
       <div class="guide-links">
         
-          <span>← <a href="/v2/guide/routing.html">라우팅</a></span>
+          <span>← <a href="/v2/guide/ssr.html">서버사이드 렌더링</a></span>
         
         
-          <span style="float:right"><a href="/v2/guide/unit-testing.html">단위 테스팅</a> →</span>
+          <span style="float:right"><a href="/v2/guide/migration.html">Vue 1.x에서 마이그레이션</a> →</span>
         
       </div>
     
     <div class="footer">
       이 문서에 문제를 제보하거나 기여하고 싶은 부분이 있으십니까?
-      <a href="https://github.com/vuejs/vuejs.org/blob/master/src/v2/guide/state-management.md" target="_blank">
+      <a href="https://github.com/vuejs/vuejs.org/blob/master/src/v2/guide/typescript.md" target="_blank">
         Github에서 이 페이지를 수정하세요!
       </a>
     </div>
